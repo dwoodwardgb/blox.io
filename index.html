@@ -1,0 +1,19 @@
+<script src="/socket.io/socket.io.js"></script>
+<script>
+'use strict';
+
+(function () {
+  var socket = io.connect('http://localhost:4000');
+  var id;
+
+  socket.on('id', function (_id) {
+    id = _id;
+    window.alert('got id!: ' + id);
+  });
+
+  socket.on('update', function (data) {
+    console.log('got update: ' + data);
+  });
+
+}());
+</script>
