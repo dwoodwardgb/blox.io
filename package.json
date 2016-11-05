@@ -1,0 +1,24 @@
+{
+  "name": "blox.io",
+  "version": "1.0.0",
+  "description": "Wow so blocks",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dwoodwardgb/blox.io.git"
+  },
+  "keywords": [
+    "blocks",
+    "io",
+    "game"
+  ],
+  "author": "David Woodward, Samuel Holmberg, Jack Chen, Justin Kim",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dwoodwardgb/blox.io/issues"
+  },
+  "homepage": "https://github.com/dwoodwardgb/blox.io#readme"
+}
