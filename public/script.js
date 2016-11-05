@@ -1,4 +1,4 @@
-
+//Test comment
 'use strict';
 
 (function () {
