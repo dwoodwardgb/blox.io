@@ -5,13 +5,6 @@ var io = require('socket.io')(server);
 var gameFactory = require('./game');
 
 server.listen(4000);
-
-// index.html ------------------------------------------------------------------
-
-app.get('/', function (req, res) {
-  res.sendFile(__dirname + '/index.html');
-});
-
 app.use(express.static('public'));
 
 // game instance ---------------------------------------------------------------
