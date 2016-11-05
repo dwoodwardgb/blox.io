@@ -3,40 +3,46 @@
 module.exports = function () {
   var state = {};
 
-  return {
-    addPlayer(id, startX, startY) {
-      state[id] = {
-        x: startX,
-        y: startY,
-        dx: 0,
-        dy: 0
-      };
-    },
+  function addPlayer(id, startX, startY) {
+    state[id] = {
+      x: startX,
+      y: startY,
+      dx: 0,
+      dy: 0
+    };
+  }
 
-    updatePlayerVelocity(id, newDx, newDy) {
-      var player = state[id];
+  function updatePlayerVelocity(id, newDx, newDy) {
+    var player = state[id];
 
-      if (player) {
-        player.dx = newDx;
-        player.dy = newDy;
-      }
-    },
-
-    removePlayer(id) {
-      delete state[id];
-    },
-
-    getState() {
-      return state;
-    },
-
-    tick(deltaT) {
-      for (var id in state) {
-        var data = state[id];
-
-        data.x += data.dx * deltaT;
-        data.y += data.dy * deltaT;
-      }
+    if (player) {
+      player.dx = newDx;
+      player.dy = newDy;
     }
+  }
+
+  function removePlayer(id) {
+    delete state[id];
+  }
+
+  function getState() {
+    return state;
+  }
+
+  function tick(deltaT) {
+    for (var id in state) {
+      var data = state[id];
+
+      data.x += data.dx * deltaT;
+      data.y += data.dy * deltaT;
+    }
+  }
+
+  return {
+    addPlayer,
+    updatePlayerVelocity,
+    removePlayer,
+    getState,
+    tick
   };
 };
