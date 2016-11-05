@@ -1,4 +1,5 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var gameFactory = require('./game');
@@ -10,6 +11,8 @@ server.listen(4000);
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
+
+app.use(express.static('public'));
 
 // game instance ---------------------------------------------------------------
 

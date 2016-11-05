@@ -1,19 +1,20 @@
-<script src="/socket.io/socket.io.js"></script>
-<script>
-'use strict';
 
-(function () {
-  var socket = io.connect('http://localhost:4000');
-  var id;
+<!DOCTYPE html>
+<html>
 
-  socket.on('id', function (_id) {
-    id = _id;
-    window.alert('got id!: ' + id);
-  });
+  <head>
+  	<title>BLOX.IO</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
 
-  socket.on('update', function (data) {
-    console.log('got update: ' + data);
-  });
+  <body>
+    <h1>BLOX.IO</h1>
+    <div id="text"></div>
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <script src="script.js"></script>
+  </body>
 
-}());
-</script>
+</html>
+
+
