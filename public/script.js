@@ -20,6 +20,22 @@ var color = "green";
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
+//Monster
+//Eyes State
+var fx = 25;
+var fy = 25;
+var fz = fx+50;
+
+//Iris State
+var fs = 22.5;
+var ft = 22.5;
+var fu = fx+47.5;
+
+//Face State
+var fa=0;
+var fb=0;
+
+
 //Socket ID
   socket.on('id', function (_id) {
     id = _id;
@@ -33,16 +49,17 @@ document.addEventListener("keyup", keyUpHandler, false);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     for (var _id in data) {
-    	var info = data[_id];
+     var info = data[_id];
 
-  	if (_id==id){
-  		color= "red";
-  	}
-  	else{
-		  color="black";
-	}  	
-	drawPlayer(data[_id].x, data[_id].y, color);
-  }
+  	 if (_id==id){
+  		  color= "red";
+  	 }
+  	 else{
+		    color="black";
+	   }  	
+	   drawPlayer(data[_id].x, data[_id].y, color);
+     
+    }
   
   });
 
@@ -62,6 +79,33 @@ function drawPlayer(xPosition, yPosition, color) {
     ctx.closePath();
 }
 
+//Drawing the Monster
+function drawEyes(xPosition, yPosition) {
+  ctx.arc((xPosition+fx)/5, (yPosition+fy)/5, 10, 0, Math.PI * 2);
+  ctx.arc((fz+xPosition)/5, (yPosition+fy)/5, 10, 0, Math.PI * 2);
+  ctx.fillStyle = "black";
+  ctx.fill();
+}
+function drawFace(xPosition, yPosition, color) {
+  ctx.fillStyle= color;
+  ctx.fillRect(xPosition+fa,yPosition+fb,100/5,100/5);
+}
+function drawMouth(xPosition, yPosition) {
+  ctx.fillStyle= "black";
+  ctx.fillRect((xPosition+fa+32.5)/5,(yPosition+fb+50)/5,35/5,45/5);
+}  
+function drawIris(xPosition, yPosition){
+  ctx.fillStyle = "red";
+  ctx.fillRect((xPosition+fs)/5,(yPosition+ft)/5,5/5,5/5);
+  ctx.fillRect((xPosition+fu)/5,(yPosition+ft)/5,5/5,5/5);
+}
+
+function drawMonster(xPosition, yPosition, color) {
+  drawFace(xPosition, yPosition, color);
+  drawEyes(xPosition, yPosition);
+  drawIris(xPosition, yPosition);
+  drawMouth();
+}
 
 //When someone presses a key
 function keyDownHandler(e) {
