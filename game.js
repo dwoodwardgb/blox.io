@@ -6,11 +6,22 @@ module.exports = function () {
 
   function addPlayer(id, startX, startY) {
     state[id] = {
+      type = 0,
       x: startX,
       y: startY,
       dx: 0,
       dy: 0
     };
+  }
+
+  function addNPC(id, startX, startY) {
+    state[id] = {
+      type = 1,
+      x: startX,
+      y: startY,
+      destx: 0,
+      desty: 0
+    }
   }
 
   function updatePlayerVelocity(id, newDx, newDy) {
@@ -34,11 +45,26 @@ module.exports = function () {
     for (var id in state) {
       var data = state[id];
 
-      if (!outOfBounds(data.x + (data.dx * deltaT),
-                       data.y + (data.dy * deltaT))) {
+      if (data.type === 0) {
+        if (!outOfBounds(data.x + (data.dx * deltaT),
+                         data.y + (data.dy * deltaT))) {
 
-        data.x += data.dx * deltaT;
-        data.y += data.dy * deltaT;
+          data.x += data.dx * deltaT;
+          data.y += data.dy * deltaT;
+        }
+      } else if (data.type === 1) {
+          var distfromdestx = (data.destx-data.x);
+          var distfromdesty = (data.destx-data.y);
+
+          var distfromdest = Math.sqrt((Math.pow(distfromdestx, 2) + Math.pow(distfromdesty, 2)));
+
+          if (distfromdest >= 20) {
+            var relpropx = distfromdestx / distfromdest;
+            var relpropy = distfromdesty / distfromdest;
+
+            data.x += 0.2 * relpropx * deltaT;
+            data.y += 0.2 * relpropy * deltaT;
+          }
       }
     }
   }
@@ -49,6 +75,7 @@ module.exports = function () {
 
   return {
     addPlayer,
+    addNPC,
     updatePlayerVelocity,
     removePlayer,
     getState,
