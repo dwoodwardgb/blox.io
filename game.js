@@ -2,7 +2,8 @@
 
 module.exports = function () {
   var state = {};
-  var worldWidth = 480, worldHeight = 320;
+  var worldWidth = 470, worldHeight = 320;
+  var PLAYER_WIDTH = 20, PLAYER_HEIGHT = 20;
 
   function addPlayer(id, startX, startY) {
     state[id] = {
@@ -44,7 +45,8 @@ module.exports = function () {
   }
 
   function outOfBounds(x, y) {
-    return ((x < 0 || x > worldWidth) || (y < 0 || y > worldHeight));
+    return ((x < 0 || x > worldWidth - PLAYER_WIDTH)
+            || (y < 0 || y > worldHeight - PLAYER_HEIGHT));
   }
 
   return {
