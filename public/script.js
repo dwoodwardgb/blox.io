@@ -52,7 +52,7 @@
       if (info.type === 0){
         drawPlayer(info.x, info.y, colorById(_id));
       } else if (info.type === 1) {
-        drawMonster(info.x, info.y, colorById(_id));
+        drawMonster(info.x, info.y, "green");
       }
     }
 
@@ -76,10 +76,9 @@
 
   //Drawing the Monster
   function drawEyes(xPosition, yPosition) {
-    ctx.arc((xPosition+fx)/5, (yPosition+fy)/5, 10, 0, Math.PI * 2);
-    ctx.arc((fz+xPosition)/5, (yPosition+fy)/5, 10, 0, Math.PI * 2);
-    ctx.fillStyle = "black";
-    ctx.fill();
+    ctx.fillStyle= "black";
+    ctx.fillRect(xPosition+fx/5-2,yPosition+fy/5-2,4,4);
+    ctx.fillRect(xPosition+fz/5-2,yPosition+fy/5-2,4,4);
   }
   function drawFace(xPosition, yPosition, color) {
     ctx.fillStyle= color;
@@ -87,19 +86,19 @@
   }
   function drawMouth(xPosition, yPosition) {
     ctx.fillStyle= "black";
-    ctx.fillRect((xPosition+fa+32.5)/5,(yPosition+fb+50)/5,35/5,45/5);
-  }  
+    ctx.fillRect((xPosition+fa+32.5/5),(yPosition+fb+50/5),35/5,45/5);
+  }
   function drawIris(xPosition, yPosition){
     ctx.fillStyle = "red";
-    ctx.fillRect((xPosition+fs)/5,(yPosition+ft)/5,5/5,5/5);
-    ctx.fillRect((xPosition+fu)/5,(yPosition+ft)/5,5/5,5/5);
+    ctx.fillRect((xPosition+fs/5),(yPosition+ft/5),1,1);
+    ctx.fillRect((xPosition+fu/5),(yPosition+ft/5),1,1);
   }
 
   function drawMonster(xPosition, yPosition, color) {
     drawFace(xPosition, yPosition, color);
     drawEyes(xPosition, yPosition);
     drawIris(xPosition, yPosition);
-    drawMouth();
+    drawMouth(xPosition, yPosition);
   }
 
   //When someone presses a key
