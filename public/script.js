@@ -50,8 +50,11 @@
 
       for (var _id in data) {
         var info = data[_id];
-
-        drawPlayer(data[_id].x, data[_id].y, colorById(_id));
+        if (info.type === 0){
+          drawPlayer(info.x, info.y, colorById(_id));
+        } else if (info.type === 1) {
+          drawMonster(info.x, info.y, colorById(_id));
+        }
       }
 
     });
