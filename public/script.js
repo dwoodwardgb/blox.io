@@ -85,6 +85,12 @@
     }
   });
 
+  socket.on('dead', function () {
+    setText('you died!');
+    window.alert('you died');
+    socket.close();
+  });
+
   //Test Window
   function setText(text) {
     var x = document.getElementById('text');
