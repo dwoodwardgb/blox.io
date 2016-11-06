@@ -2,7 +2,7 @@
 
 module.exports = function (getSocketById) {
   var state = {};
-  var worldWidth = 1000, worldHeight = 450;
+  var worldWidth = 4000, worldHeight = 4000;
   var PLAYER_WIDTH = 20, PLAYER_HEIGHT = 20;
 
   // potential move results
@@ -40,14 +40,20 @@ module.exports = function (getSocketById) {
       type: 1,
       x: startX,
       y: startY,
-      destx: 100,
-      desty: 100
+      destx: 2000,
+      desty: 2200
     }
   }
 
-  function updateNPC(id, destX, destY) {
-    state[id].destx = destX;
-    state[id].desty = destY;
+  function updateNPC(socketid) {
+    for (var id in state) {
+      var data = state[id];
+
+      if (data.type === 1) {
+        state[id].destx = state[socketid].x;
+        state[id].desty = state[socketid].y;
+      }
+    }
   }
 
   function tick(deltaT) {
