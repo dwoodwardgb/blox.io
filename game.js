@@ -14,7 +14,10 @@ module.exports = function (getSocketById) {
       x: startX,
       y: startY,
       dx: 0,
-      dy: 0
+      dy: 0,
+      facing: 0 //0 up, 1 down, 2 left, 3 right
+      hand: "empty", //empty, shield, sword, bow
+      handactive: false
     };
   }
 
@@ -24,6 +27,22 @@ module.exports = function (getSocketById) {
     if (player) {
       player.dx = newDx;
       player.dy = newDy;
+    }
+
+    if (newDx !== 0) {
+      if (newDx > 0) {
+        state[id].facing = 3;
+      } else {
+        state[id].facing = 2;
+      }
+    }
+
+    if (newDy !== 0) {
+      if (newDy > 0) {
+        state[id].facing = 0;
+      } else {
+        state[id].facing = 1;
+      }
     }
   }
 

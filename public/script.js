@@ -79,6 +79,15 @@
 
       if (info.type === 0){
         drawPlayer(xPosition, yPosition, colorById(_id));
+        if (data[id].hand === "sword") {
+          if (data[id].handactive === true) {
+            drawPointedSword(xPosition, yPosition, data[id].facing);
+          } else {
+            drawRestedSword(xPosition, yPosition, data[id].facing);
+          }
+        } else if (data[id].hand === "shield") {
+          drawShield(xPosition, yPosition, data[id].facing);
+        }
       } else if (info.type === 1) {
         drawMonster(xPosition, yPosition, "green");
       }
@@ -133,6 +142,64 @@
     drawMouth(xPosition, yPosition);
   }
 
+  //Drawing the Sword (when unsheathed and sheathed)
+  //Sword Functions to be Activated in Spacebar
+  function drawRestedSword(xPosition, yPosition, facing){
+    ctx.fillStyle= "yellow";
+    //Up = 0, Down = 1. Left = 2, Right = 3
+     if (facing === 0) {
+      ctx.fillRect(xPosition+8.5,yPosition,3,20);
+      ctx.fillRect(xPosition+5,yPosition+12.5,10,3);
+     } else if (facing === 1){
+      ctx.fillRect(xPosition+8.5,yPosition,3,20);
+      ctx.fillRect(xPosition+5,yPosition+3.5,10,3);
+     } else if (facing === 2){
+      ctx.fillRect(xPosition,yPosition+8.5,20,3);
+      ctx.fillRect(xPosition+12.5,yPosition+5,3,10);
+     } else if (facing === 3){
+      ctx.fillRect(xPosition,yPosition+8.5,20,3);
+      ctx.fillRect(xPosition+3.5,yPosition+5,3,10);
+     }
+  }
+
+  function drawPointedSword(xPosition, yPosition, facing){
+    ctx.fillStyle= "yellow";
+    //Up = 0, Down = 1. Left = 2, Right = 3
+    if (facing === 0) {
+      ctx.fillRect(xPosition+8.5,yPosition-20,3,20);
+      ctx.fillRect(xPosition+5,yPosition-12.5*2,10,3);
+    }else if (facing === 1){
+      ctx.fillRect(xPosition+8.5,yPosition+20,3,20);
+      ctx.fillRect(xPosition+5,yPosition+12.5*2,10,3);
+    }else if (facing === 2){
+      ctx.fillRect(xPosition-20,yPosition+8.5,20,3);
+      ctx.fillRect(xPosition-12.5*2,yPosition+5,3,10);
+    }else if (facing === 3){
+      ctx.fillRect(xPosition+20,yPosition+8.5,20,3);
+      ctx.fillRect(xPosition+12.5*2,yPosition+5,3,10);
+    }
+  }
+
+  //Drawing Shield pending on Direction
+  function drawShield(xPosition, yPosition, facing){
+    ctx.fillStyle= "blue";
+    //Up = 0, Down = 1. Left = 2, Right = 3
+    if (facing === 0) {
+      ctx.fillRect(xPosition,yPosition,20,3);
+      ctx.fillRect(xPosition+5.5,yPosition-3,10,3);
+    }else if (facing === 1){
+      ctx.fillRect(xPosition,yPosition+20,20,3);
+      ctx.fillRect(xPosition+5.5,yPosition+23,10,3);
+    }else if (facing === 2){
+      ctx.fillRect(xPosition,yPosition,3,20);
+      ctx.fillRect(xPosition-3,yPosition+5.5,3,10);
+    }else if (facing === 3){
+      ctx.fillRect(xPosition+20,yPosition,3,20);
+      ctx.fillRect(xPosition+23,yPosition+5.5,3,10);
+    }
+  }
+
+
   //When someone presses a key
   function keyDownHandler(e) {
     setText(String(e.keyCode));
@@ -156,9 +223,13 @@
       dy = -1*speed;
       setText("top");
     }
+    if (e.keyCode == 32 ){
+      socket.emit("wielded", true);
+    }
     if (dx!=dxOld || dy!=dyOld){
       socket.emit("updateVelocity", {dx,dy});
     }
+
     dxOld = dx;
     dyOld = dy;
   }
@@ -180,6 +251,10 @@
     if(e.keyCode == 38 || e.keyCode == 87 ) {
       dy=0;
 
+    }
+
+    if (e.keyCode == 32 ){
+      socket.emit("wielded", false);
     }
     if (dx!=dxOld || dy!=dyOld){
       socket.emit("updateVelocity", {dx,dy});
