@@ -21,6 +21,7 @@
   var color = "green";
   document.addEventListener("keydown", keyDownHandler, false);
   document.addEventListener("keyup", keyUpHandler, false);
+  document.addEventListener("mousedown", mouseDownHandler, false);
 
   var img = new Image();
   img.src = 'http://i.imgur.com/RWRchd2.jpg';
@@ -53,10 +54,22 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     imageX = canvas.width / 2 - x;
     imageY = canvas.height / 2 - y;
-    ctx.drawImage(img, imageX, imageY);
+
+    ctx.drawImage(img, imageX-(data[id].dx*20), imageY-(data[id].dy*20));
 
     x = data[id].x;
     y = data[id].y;
+
+    if (x < canvas.width/2) {
+      x = canvas.width/2;
+    } else if (x > 4000 - canvas.width/2) {
+      x = 4000 - canvas.width/2;
+    }
+    if (y < canvas.height/2) {
+      y = canvas.height/2;
+    } else if (y > 4000-canvas.height/2) {
+      y = 4000 - canvas.height/2;
+    }
 
     for (var _id in data) {
       var info = data[_id];
@@ -167,6 +180,10 @@
     }
     dxOld = dx;
     dyOld = dy;
+  }
+
+  function mouseDownHandler(e) {
+    socket.emit("click", {});
   }
 
   function colorById(str) { //directly from stack overflow user Joe Freeman, built from code by Cristian Sanchez

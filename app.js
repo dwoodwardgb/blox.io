@@ -25,9 +25,9 @@ io.on('connection', function (socket) { //opens connection with a client
   console.log(`client: ${socket.id} connected`);
 
   // add player to game
-  var startX = 270, startY = 200;
+  var startX = 2000, startY = 2000;
   game.addPlayer(socket.id, startX, startY);
-  game.addNPC(npcid++, 100, startY);
+  game.addNPC(npcid++, 2000, startY);
 
   // tell player it's id
   socket.emit('id', socket.id);
@@ -45,7 +45,7 @@ io.on('connection', function (socket) { //opens connection with a client
   });
 
   socket.on('click', function (data) {
-    game.updateNPC(data.x, data.y);
+    game.updateNPC(socket.id);
     console.log(`updated NPC dest: ${data.x},${data.y})`);
   });
 });
