@@ -15,9 +15,9 @@ module.exports = function (getSocketById) {
       y: startY,
       dx: 0,
       dy: 0,
-      facing: 0 //0 up, 1 down, 2 left, 3 right
-      hand: "empty", //empty, shield, sword, bow
-      handactive: false
+      facing: 0, //0 up, 1 down, 2 left, 3 right
+      hand: "sword", //empty, shield, sword, bow
+      handactive: true
     };
   }
 
@@ -39,9 +39,9 @@ module.exports = function (getSocketById) {
 
     if (newDy !== 0) {
       if (newDy > 0) {
-        state[id].facing = 0;
-      } else {
         state[id].facing = 1;
+      } else {
+        state[id].facing = 0;
       }
     }
   }
@@ -87,20 +87,36 @@ module.exports = function (getSocketById) {
           var sock;
 
           if (data.type === 0 && intData.type !== 0) {
-            // kill data
-            delete state[id];
-            sock = getSocketById(id);
-            sock.emit('dead', {});
-            console.log('killing: ' + id);
+            if (data.hand === "shield" && data.handactive && protecting(data, intData)) {
+              relocate(intData, data);
+            } else if (data.hand === "sword" && data.handactive && protecting(data, intData)) {
+              //kill intData
+              delete state[intId];
+              console.log("Deleted monster: " + intId);
+            } else {
+              // kill data
+              delete state[id];
+              sock = getSocketById(id);
+              sock.emit('dead', {});
+              console.log('killing: ' + id);
+            }
           } else if (data.type === 1 && intData.type === 0) {
-            // kill intData & move in
-            delete state[intId];
-            sock = getSocketById(intId);
-            sock.emit('dead', {});
-            console.log('killing: ' + intId);
+            if (intData.hand === "shield" && intData.handactive && protecting(intData, data)) {
+              relocate(data, intData);
+            } else if (intData.hand === "sword" && intData.handactive && protecting(intData, data)) {
+              //kill data
+              delete state[id];
+              console.log("Deleted monster: " + id);
+            } else {
+              // kill intData & move in
+              delete state[intId];
+              sock = getSocketById(intId);
+              sock.emit('dead', {});
+              console.log('killing: ' + intId);
 
-            data.x = res.move.x;
-            data.y = res.move.y;
+              data.x = res.move.x;
+              data.y = res.move.y;
+            }
           }
         });
       } else if (res.status === VALID) {
@@ -108,6 +124,35 @@ module.exports = function (getSocketById) {
         data.y = res.move.y;
       }
     }
+  }
+
+  function relocate(toMove, reference, id, deltaT) {
+    toMove.x += (toMove.x - reference.x)*2; //assume toMove x = 1, ref x = 3. xtoMove = -4 now, which is twice the distance down from reference
+    toMove.y += (toMove.y - reference.y)*2;
+    var res = checkNextMove(id, toMove, deltaT);
+    if (res.status === INTERSECTS) {
+      // for each, remove accordingly
+      res.intersected.forEach(intId => {
+        var intData = state[intId];
+        relocate(intData, toMove);
+      });
+    }
+  }
+
+  function protecting(player, monster) {
+    if (player.facing === 0) {
+      return monster.y < player.y;
+    }
+    if (player.facing === 1) {
+      return monster.y > player.y;
+    }
+    if (player.facing === 2) {
+      return monster.x < player.x;
+    }
+    if (player.facing === 3) {
+      return monster.x > player.x;
+    }
+    return false; //no shield???
   }
 
   // (...) => { x, y }

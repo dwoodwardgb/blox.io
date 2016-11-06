@@ -80,12 +80,12 @@
       if (info.type === 0){
         drawPlayer(xPosition, yPosition, colorById(_id));
         if (data[id].hand === "sword") {
-          if (data[id].handactive === true) {
+          if (data[id].handactive) {
             drawPointedSword(xPosition, yPosition, data[id].facing);
           } else {
             drawRestedSword(xPosition, yPosition, data[id].facing);
           }
-        } else if (data[id].hand === "shield") {
+        } else if (data[id].hand === "shield" && data[id].handactive) {
           drawShield(xPosition, yPosition, data[id].facing);
         }
       } else if (info.type === 1) {
@@ -96,8 +96,8 @@
 
   socket.on('dead', function () {
     setText('you died!');
-    window.alert('you died');
     socket.close();
+    window.alert('you died');
   });
 
   //Test Window
@@ -167,13 +167,13 @@
     //Up = 0, Down = 1. Left = 2, Right = 3
     if (facing === 0) {
       ctx.fillRect(xPosition+8.5,yPosition-20,3,20);
-      ctx.fillRect(xPosition+5,yPosition-12.5*2,10,3);
+      ctx.fillRect(xPosition+5,yPosition-8.5,10,3);
     }else if (facing === 1){
       ctx.fillRect(xPosition+8.5,yPosition+20,3,20);
       ctx.fillRect(xPosition+5,yPosition+12.5*2,10,3);
     }else if (facing === 2){
       ctx.fillRect(xPosition-20,yPosition+8.5,20,3);
-      ctx.fillRect(xPosition-12.5*2,yPosition+5,3,10);
+      ctx.fillRect(xPosition-8.5,yPosition+5,3,10);
     }else if (facing === 3){
       ctx.fillRect(xPosition+20,yPosition+8.5,20,3);
       ctx.fillRect(xPosition+12.5*2,yPosition+5,3,10);
@@ -182,19 +182,19 @@
 
   //Drawing Shield pending on Direction
   function drawShield(xPosition, yPosition, facing){
-    ctx.fillStyle= "blue";
+    ctx.fillStyle= "gold";
     //Up = 0, Down = 1. Left = 2, Right = 3
     if (facing === 0) {
-      ctx.fillRect(xPosition,yPosition,20,3);
+      ctx.fillRect(xPosition-3,yPosition,26,3);
       ctx.fillRect(xPosition+5.5,yPosition-3,10,3);
     }else if (facing === 1){
-      ctx.fillRect(xPosition,yPosition+20,20,3);
+      ctx.fillRect(xPosition-3,yPosition+20,26,3);
       ctx.fillRect(xPosition+5.5,yPosition+23,10,3);
     }else if (facing === 2){
-      ctx.fillRect(xPosition,yPosition,3,20);
+      ctx.fillRect(xPosition,yPosition-3,3,26);
       ctx.fillRect(xPosition-3,yPosition+5.5,3,10);
     }else if (facing === 3){
-      ctx.fillRect(xPosition+20,yPosition,3,20);
+      ctx.fillRect(xPosition+20,yPosition-3,3,26);
       ctx.fillRect(xPosition+23,yPosition+5.5,3,10);
     }
   }
