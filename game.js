@@ -7,7 +7,7 @@ module.exports = function () {
 
   function addPlayer(id, startX, startY) {
     state[id] = {
-      type = 0,
+      type: 0,
       x: startX,
       y: startY,
       dx: 0,
@@ -34,11 +34,11 @@ module.exports = function () {
 
   function addNPC(id, startX, startY) {
     state[id] = {
-      type = 1,
+      type: 1,
       x: startX,
       y: startY,
-      destx: 0,
-      desty: 0
+      destx: 100,
+      desty: 100
     }
   }
 
@@ -61,7 +61,7 @@ module.exports = function () {
         }
       } else if (data.type === 1) {
           var distfromdestx = (data.destx-data.x);
-          var distfromdesty = (data.destx-data.y);
+          var distfromdesty = (data.desty-data.y);
 
           var distfromdest = Math.sqrt((Math.pow(distfromdestx, 2) + Math.pow(distfromdesty, 2)));
 
@@ -117,6 +117,7 @@ module.exports = function () {
   return {
     addPlayer,
     addNPC,
+    updateNPC,
     updatePlayerVelocity,
     removePlayer,
     getState,
