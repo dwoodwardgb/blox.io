@@ -208,16 +208,13 @@
       setText("right");
     }
     if(e.keyCode == 40 || e.keyCode == 83) {
-      
       dy = speed;
       setText("down");
     }
     if(e.keyCode == 38 || e.keyCode == 87 ) {
-      
       dy = -1*speed;
       setText("top");
     }
-
     if (e.keyCode == 32 ){
       socket.emit("wielded", true);
     }
@@ -231,29 +228,22 @@
   //When someone let goes of a key
   function keyUpHandler(e) {
     if(e.keyCode == 37 || e.keyCode == 65) {
-      
       dx= 0;
-
     }
     if(e.keyCode == 39 || e.keyCode == 68) {
-      
       dx=0;
-
     }
     if(e.keyCode == 40 || e.keyCode == 83) {
-      
       dy=0;
-
     }
     if(e.keyCode == 38 || e.keyCode == 87 ) {
-      
       dy=0;
-
     }
 
     if (e.keyCode == 32 ){
       socket.emit("wielded", false);
     }
+
     if (dx!=dxOld || dy!=dyOld){
       socket.emit("updateVelocity", {dx,dy});
     }
@@ -277,5 +267,4 @@
     }
     return colour;
   }
-
 }());
