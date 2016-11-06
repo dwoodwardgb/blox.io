@@ -10,7 +10,7 @@
   //Client Variables
   var canvas = document.getElementById("myCanvas");
   var ctx = canvas.getContext("2d");
-  var speed = .3;
+  var speed = .1;
   var size = 20;
   var dx = 0;
   var dy = 0;
@@ -21,24 +21,22 @@
   document.addEventListener("keyup", keyUpHandler, false);
 
   //Socket ID
-    socket.on('id', function (_id) {
-      id = _id;
-    });
-
+  socket.on('id', function (_id) {
+    id = _id;
+  });
 
   //Socket Data
-    socket.on('update', function (data) {
-      console.log('got update: ' + data);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+  socket.on('update', function (data) {
+    console.log('got update: ' + data);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      for (var _id in data) {
-      	var info = data[_id];
+    for (var _id in data) {
+      var info = data[_id];
 
-        drawPlayer(data[_id].x, data[_id].y, colorById(_id));
-      }
+      drawPlayer(data[_id].x, data[_id].y, colorById(_id));
+    }
 
-    });
-
+  });
 
   //Test Window
   function setText(text) {
@@ -48,38 +46,38 @@
 
   //Draws the players
   function drawPlayer(xPosition, yPosition, color) {
-      ctx.beginPath();
-      ctx.rect(xPosition, yPosition, size, size);
-      ctx.fillStyle = color;
-      ctx.fill();
-      ctx.closePath();
+    ctx.beginPath();
+    ctx.rect(xPosition, yPosition, size, size);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.closePath();
   }
 
 
   //When someone presses a key
   function keyDownHandler(e) {
     setText(String(e.keyCode));
-      if(e.keyCode == 37 || e.keyCode == 65) {
+    if(e.keyCode == 37 || e.keyCode == 65) {
 
-          dx = -1*speed;
-          setText("left");
-      }
-      if(e.keyCode == 39 || e.keyCode == 68) {
+      dx = -1*speed;
+      setText("left");
+    }
+    if(e.keyCode == 39 || e.keyCode == 68) {
 
-          dx = speed;
-          setText("right");
-      }
-      if(e.keyCode == 40 || e.keyCode == 83) {
+      dx = speed;
+      setText("right");
+    }
+    if(e.keyCode == 40 || e.keyCode == 83) {
 
-          dy = speed;
-          setText("down");
-      }
-      if(e.keyCode == 38 || e.keyCode == 87 ) {
+      dy = speed;
+      setText("down");
+    }
+    if(e.keyCode == 38 || e.keyCode == 87 ) {
 
-          dy = -1*speed;
-          setText("top");
-      }
-      if (dx!=dxOld || dy!=dyOld){
+      dy = -1*speed;
+      setText("top");
+    }
+    if (dx!=dxOld || dy!=dyOld){
       socket.emit("updateVelocity", {dx,dy});
     }
     dxOld = dx;
@@ -87,23 +85,23 @@
   }
   //When someone let goes of a key
   function keyUpHandler(e) {
-      if(e.keyCode == 37 || e.keyCode == 65) {
-        dx= 0;
+    if(e.keyCode == 37 || e.keyCode == 65) {
+      dx= 0;
 
-      }
-      if(e.keyCode == 39 || e.keyCode == 68) {
-        dx=0;
+    }
+    if(e.keyCode == 39 || e.keyCode == 68) {
+      dx=0;
 
-      }
-      if(e.keyCode == 40 || e.keyCode == 83) {
-        dy=0;
+    }
+    if(e.keyCode == 40 || e.keyCode == 83) {
+      dy=0;
 
-      }
-      if(e.keyCode == 38 || e.keyCode == 87 ) {
-          dy=0;
+    }
+    if(e.keyCode == 38 || e.keyCode == 87 ) {
+      dy=0;
 
-      }
-      if (dx!=dxOld || dy!=dyOld){
+    }
+    if (dx!=dxOld || dy!=dyOld){
       socket.emit("updateVelocity", {dx,dy});
     }
     dxOld = dx;
@@ -122,6 +120,5 @@
     }
     return colour;
   }
-
 
 }());
