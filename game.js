@@ -14,16 +14,6 @@ module.exports = function () {
     };
   }
 
-  function addNPC(id, startX, startY) {
-    state[id] = {
-      type = 1,
-      x: startX,
-      y: startY,
-      destx: 0,
-      desty: 0
-    }
-  }
-
   function updatePlayerVelocity(id, newDx, newDy) {
     var player = state[id];
 
@@ -39,6 +29,21 @@ module.exports = function () {
 
   function getState() {
     return state;
+  }
+
+  function addNPC(id, startX, startY) {
+    state[id] = {
+      type = 1,
+      x: startX,
+      y: startY,
+      destx: 0,
+      desty: 0
+    }
+  }
+
+  function updateNPC(id, destX, destY) {
+    state[id].destx = destX;
+    state[id].desty = destY;
   }
 
   function tick(deltaT) {

@@ -41,4 +41,9 @@ io.on('connection', function (socket) { //opens connection with a client
     game.removePlayer(socket.id);
     console.log(`client: ${socket.id} disconnected`);
   });
+
+  socket.on('click', function (data)) {
+    game.updateNPC(data.x, data.y);
+    console.log(`updated NPC dest: ${data.x},${data.y})`);
+  }
 });
