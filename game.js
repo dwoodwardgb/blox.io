@@ -2,12 +2,12 @@
 
 module.exports = function () {
   var state = {};
-  var worldWidth = 470, worldHeight = 320;
+  var worldWidth = 1000, worldHeight = 450;
   var PLAYER_WIDTH = 20, PLAYER_HEIGHT = 20;
 
   function addPlayer(id, startX, startY) {
     state[id] = {
-      type = 0,
+      type: 0,
       x: startX,
       y: startY,
       dx: 0,
@@ -34,7 +34,7 @@ module.exports = function () {
 
   function addNPC(id, startX, startY) {
     state[id] = {
-      type = 1,
+      type: 1,
       x: startX,
       y: startY,
       destx: 0,
