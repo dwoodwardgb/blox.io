@@ -20,6 +20,7 @@
   document.addEventListener("keydown", keyDownHandler, false);
   document.addEventListener("keyup", keyUpHandler, false);
 
+
   //Monster
   //Eyes State
   var fx = 25;
@@ -34,7 +35,6 @@
   //Face State
   var fa=0;
   var fb=0;
-
 
 
   //Socket ID
@@ -132,6 +132,7 @@
     dxOld = dx;
     dyOld = dy;
   }
+
   //When someone let goes of a key
   function keyUpHandler(e) {
       if(e.keyCode == 37 || e.keyCode == 65) {
