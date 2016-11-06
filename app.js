@@ -3,6 +3,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var gameFactory = require('./game');
+var npcid = 1;
 
 server.listen(4000);
 app.use(express.static('public'));
@@ -26,6 +27,7 @@ io.on('connection', function (socket) { //opens connection with a client
   // add player to game
   var startX = 270, startY = 200;
   game.addPlayer(socket.id, startX, startY);
+  game.addNPC(npcid++, 100, startY);
 
   // tell player it's id
   socket.emit('id', socket.id);
