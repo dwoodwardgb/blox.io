@@ -14,12 +14,18 @@
   var size = 20;
   var dx = 0;
   var dy = 0;
+  var x = 0;
+  var y = 0;
   var dxOld = dx;
   var dyOld = dy;
   var color = "green";
   document.addEventListener("keydown", keyDownHandler, false);
   document.addEventListener("keyup", keyUpHandler, false);
 
+  var img = new Image();
+  img.src = 'http://i.imgur.com/RWRchd2.jpg';
+  var imageX = 0;
+  var imageY = 0;
 
   //Monster
   //Eyes State
@@ -36,7 +42,6 @@
   var fa=0;
   var fb=0;
 
-
   //Socket ID
   socket.on('id', function (_id) {
     id = _id;
@@ -46,17 +51,25 @@
   socket.on('update', function (data) {
     console.log('got update: ' + data);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    imageX = canvas.width / 2 - x;
+    imageY = canvas.height / 2 - y;
+    ctx.drawImage(img, imageX, imageY);
+
+    x = data[id].x;
+    y = data[id].y;
 
     for (var _id in data) {
       var info = data[_id];
+      //setText("x: " + x + " " + "y: " + y);
+      var xPosition = info.x - x + (canvas.width / 2);
+      var yPosition = info.y - y + (canvas.height / 2);
+
       if (info.type === 0){
-        drawPlayer(info.x, info.y, colorById(_id));
+        drawPlayer(xPosition, yPosition, colorById(_id));
       } else if (info.type === 1) {
-        drawMonster(info.x, info.y, "green");
+        drawMonster(xPosition, yPosition, "green");
       }
     }
-
-    drawPlayer(data[_id].x, data[_id].y, colorById(_id));
   });
 
   //Test Window

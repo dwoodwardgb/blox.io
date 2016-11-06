@@ -2,7 +2,7 @@
 
 module.exports = function () {
   var state = {};
-  var worldWidth = 470, worldHeight = 320;
+  var worldWidth = 1000, worldHeight = 450;
   var PLAYER_WIDTH = 20, PLAYER_HEIGHT = 20;
 
   function addPlayer(id, startX, startY) {

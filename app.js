@@ -25,7 +25,7 @@ io.on('connection', function (socket) { //opens connection with a client
   console.log(`client: ${socket.id} connected`);
 
   // add player to game
-  var startX = 0, startY = 0;
+  var startX = 270, startY = 200;
   game.addPlayer(socket.id, startX, startY);
   game.addNPC(npcid++, 100, startY);
 
