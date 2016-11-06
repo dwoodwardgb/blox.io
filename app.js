@@ -29,12 +29,12 @@ io.on('connection', function (socket) { //opens connection with a client
 
   var hand = "empty";
   playerNum++;
-  if (playerNum % 2 == 0) {
+  if (playerNum % 3 === 1) {
     hand = "sword";
-  } else if (playerNum % 2 == 1) {
+  } else if (playerNum % 3 === 2) {
     hand = "shield";
-  } else if (playerNum % 6) {
-    hand = "bow";
+  } else if (playerNum % 3 === 0) {
+    hand = "block";
   }
 
   game.addPlayer(socket.id, startX, startY, hand);

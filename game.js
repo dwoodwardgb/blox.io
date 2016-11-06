@@ -5,6 +5,7 @@ module.exports = function (getSocketById) {
   var worldWidth = 4000, worldHeight = 4000;
   var PLAYER_WIDTH = 20, PLAYER_HEIGHT = 20;
   var npcid = 1;
+  var blockid = 10000;
   var luckyPlayer;
 
   // potential move results
@@ -18,7 +19,7 @@ module.exports = function (getSocketById) {
       dx: 0,
       dy: 0,
       facing: 0, //0 up, 1 down, 2 left, 3 right
-      hand: myhand, //empty, shield, sword, bow
+      hand: myhand, //empty, shield, sword, bow, block
       handactive: false
     };
   }
@@ -81,6 +82,14 @@ module.exports = function (getSocketById) {
     }
   }
 
+  function addBlock(id, blockx, blocky) {
+    state[id] = {
+      type: 2,
+      x: blockx,
+      y: blocky
+    }
+  }
+
   function tick(deltaT) {
     for (var id in state) {
       var data = state[id];
@@ -92,36 +101,48 @@ module.exports = function (getSocketById) {
           var intData = state[intId];
           var sock;
 
-          if (data.type === 0 && intData.type !== 0) {
-            if (data.hand === "shield" && data.handactive && protecting(data, intData)) {
-              relocate(intData, data);
-            } else if (data.hand === "sword" && data.handactive && protecting(data, intData)) {
-              //kill intData
-              delete state[intId];
-              console.log("Deleted monster: " + intId);
-            } else {
-              // kill data
-              delete state[id];
-              sock = getSocketById(id);
-              sock.emit('dead', {});
-              console.log('killing: ' + id);
+          if (data.type === 0) {
+            if (intData.type === 1) {
+              if (data.hand === "shield" && data.handactive && protecting(data, intData)) {
+                relocate(intData, data);
+              } else if (data.hand === "sword" && data.handactive && protecting(data, intData)) {
+                //kill intData
+                delete state[intId];
+                console.log("Deleted monster: " + intId);
+              } else {
+                // kill data
+                delete state[id];
+                sock = getSocketById(id);
+                sock.emit('dead', {});
+                console.log('killing: ' + id);
+              }
+            } else if (intData.type === 2) {
+              console.log("NOT MOVING BECAUSE THERE IS BLOCK")
+              //don't move, there's a block in the way
+              // data.x = res.move.x;
+              // data.y = res.move.y;
             }
-          } else if (data.type === 1 && intData.type === 0) {
-            if (intData.hand === "shield" && intData.handactive && protecting(intData, data)) {
-              relocate(data, intData);
-            } else if (intData.hand === "sword" && intData.handactive && protecting(intData, data)) {
-              //kill data
-              delete state[id];
-              console.log("Deleted monster: " + id);
-            } else {
-              // kill intData & move in
-              delete state[intId];
-              sock = getSocketById(intId);
-              sock.emit('dead', {});
-              console.log('killing: ' + intId);
+          } else if (data.type === 1) {
+            if (intData.type === 0) {
+              if (intData.hand === "shield" && intData.handactive && protecting(intData, data)) {
+                relocate(data, intData);
+              } else if (intData.hand === "sword" && intData.handactive && protecting(intData, data)) {
+                //kill data
+                delete state[id];
+                console.log("Deleted monster: " + id);
+              } else {
+                // kill intData & move in
+                delete state[intId];
+                sock = getSocketById(intId);
+                sock.emit('dead', {});
+                console.log('killing: ' + intId);
 
-              data.x = res.move.x;
-              data.y = res.move.y;
+                data.x = res.move.x;
+                data.y = res.move.y;
+              }
+            } else if (intData.type === 2) {
+              // data.x = res.move.x;
+              // data.y = res.move.y;
             }
           }
         });
@@ -129,8 +150,40 @@ module.exports = function (getSocketById) {
         data.x = res.move.x;
         data.y = res.move.y;
       }
+
+      //statement which sees if a block user wants to build
+      if (data.type === 0 && data.hand === "block" && data.handactive)  {
+        inFrontIsClear(data, id, deltaT);
+      }
+
     }
     manageMonsters();
+
+  }
+
+  function inFrontIsClear(data, id, deltaT) {
+    blockid++;
+    console.log("generated new block: " + blockid);
+
+    if (data.facing === 0) {
+      addBlock(blockid, data.x, data.y-21);
+    } else if (data.facing === 1) {
+      addBlock(blockid, data.x, data.y+21);
+    } else if (data.facing === 2) {
+      addBlock(blockid, data.x-21, data.y);
+    } else if (data.facing === 3) {
+      addBlock(blockid, data.x+21, data.y);
+    }
+
+    console.log("Location: " + state[blockid].x + ", " + state[blockid].y);
+
+    var res = checkNextMove(blockid, state[blockid], deltaT);
+    if (res.status === INTERSECTS) {
+      console.log("IT INTERSECTS");
+      delete state[blockid];
+    }
+
+    data.handactive = false;
   }
 
   function manageMonsters() {
@@ -219,6 +272,8 @@ module.exports = function (getSocketById) {
           y: charData.y + 0.05 * relpropy * deltaT
         };
       }
+    } else if (charData.type === 2) {
+      return {x: charData.x, y: charData.y};
     }
   }
 
@@ -232,15 +287,18 @@ module.exports = function (getSocketById) {
 
     var intersected = [];
     for (var _id in state) {
-      if (_id === charId) continue;
+      if (_id == charId) continue;
 
       var curData = state[_id];
       if (intersect(newMove.x, newMove.y, charData, curData)) {
         intersected.push(_id);
+        console.log("intersects with: " + _id);
+        console.log("charID: " + charId);
       }
     }
 
     if (intersected.length > 0) {
+      console.log(intersected.length);
       return { status: INTERSECTS, intersected, move: newMove };
     }
 
@@ -257,13 +315,13 @@ module.exports = function (getSocketById) {
   }
 
   function typeToWidth(type) {
-    if (type === 0 || type === 1) {
+    if (type === 0 || type === 1 || type === 2) {
       return PLAYER_WIDTH;
     }
   }
 
   function typeToHeight(type) {
-    if (type === 0 || type === 1) {
+    if (type === 0 || type === 1 || type === 2) {
       return PLAYER_HEIGHT;
     }
   }

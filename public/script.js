@@ -87,9 +87,13 @@
           }
         } else if (data[_id].hand === "shield" && data[_id].handactive) {
           drawShield(xPosition, yPosition, data[_id].facing);
+        } else if (data[_id].hand === "block") {
+          drawBuilder(xPosition, yPosition, data[_id].facing);
         }
       } else if (info.type === 1) {
         drawMonster(xPosition, yPosition, "green");
+      } else if (info.type === 2) {
+        drawBox(xPosition, yPosition);
       }
     }
   });
@@ -205,6 +209,26 @@
     }else if (facing === 3){
       ctx.fillRect(xPosition+20,yPosition-3,3,26);
       ctx.fillRect(xPosition+23,yPosition+5.5,3,10);
+    }
+  }
+
+  function drawBox(xPosition, yPosition) {
+    ctx.fillStyle= "black";
+    ctx.fillRect(xPosition,yPosition,20,20);
+    ctx.fillStyle= "gray";
+    ctx.fillRect(xPosition+2,yPosition+2,16,16);
+  }
+
+  function drawBuilder(xPosition, yPosition, facing) {
+    ctx.fillStyle="blue";
+    if (facing === 0) {
+      ctx.fillRect(xPosition-3,yPosition,26,3);
+    }else if (facing === 1){
+      ctx.fillRect(xPosition-3,yPosition+20,26,3);
+    }else if (facing === 2){
+      ctx.fillRect(xPosition,yPosition-3,3,26);
+    }else if (facing === 3){
+      ctx.fillRect(xPosition+20,yPosition-3,3,26);
     }
   }
 
