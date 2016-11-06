@@ -117,7 +117,6 @@ module.exports = function (getSocketById) {
                 console.log('killing: ' + id);
               }
             } else if (intData.type === 2) {
-              console.log("NOT MOVING BECAUSE THERE IS BLOCK")
               //don't move, there's a block in the way
               // data.x = res.move.x;
               // data.y = res.move.y;
@@ -163,7 +162,6 @@ module.exports = function (getSocketById) {
 
   function inFrontIsClear(data, id, deltaT) {
     blockid++;
-    console.log("generated new block: " + blockid);
 
     if (data.facing === 0) {
       addBlock(blockid, data.x, data.y-21);
@@ -175,11 +173,8 @@ module.exports = function (getSocketById) {
       addBlock(blockid, data.x+21, data.y);
     }
 
-    console.log("Location: " + state[blockid].x + ", " + state[blockid].y);
-
     var res = checkNextMove(blockid, state[blockid], deltaT);
     if (res.status === INTERSECTS) {
-      console.log("IT INTERSECTS");
       delete state[blockid];
     }
 
@@ -292,13 +287,10 @@ module.exports = function (getSocketById) {
       var curData = state[_id];
       if (intersect(newMove.x, newMove.y, charData, curData)) {
         intersected.push(_id);
-        console.log("intersects with: " + _id);
-        console.log("charID: " + charId);
       }
     }
 
     if (intersected.length > 0) {
-      console.log(intersected.length);
       return { status: INTERSECTS, intersected, move: newMove };
     }
 
