@@ -4,11 +4,13 @@ module.exports = function (getSocketById) {
   var state = {};
   var worldWidth = 4000, worldHeight = 4000;
   var PLAYER_WIDTH = 20, PLAYER_HEIGHT = 20;
+  var npcid = 1;
+  var luckyPlayer;
 
   // potential move results
   var INTERSECTS = 1, VALID = 0, OUT_OF_BOUNDS = 2, STAGNANT = 3;
 
-  function addPlayer(id, startX, startY) {
+  function addPlayer(id, startX, startY, myhand) {
     state[id] = {
       type: 0,
       x: startX,
@@ -16,8 +18,8 @@ module.exports = function (getSocketById) {
       dx: 0,
       dy: 0,
       facing: 0, //0 up, 1 down, 2 left, 3 right
-      hand: "sword", //empty, shield, sword, bow
-      handactive: true
+      hand: myhand, //empty, shield, sword, bow
+      handactive: false
     };
   }
 
@@ -50,6 +52,10 @@ module.exports = function (getSocketById) {
     delete state[id];
   }
 
+  function wielding(id, value) {
+    state[id].handactive = value;
+  }
+
   function getState() {
     return state;
   }
@@ -59,8 +65,8 @@ module.exports = function (getSocketById) {
       type: 1,
       x: startX,
       y: startY,
-      destx: 2000,
-      desty: 2200
+      destx: 2200,
+      desty: 2000
     }
   }
 
@@ -124,6 +130,40 @@ module.exports = function (getSocketById) {
         data.y = res.move.y;
       }
     }
+    manageMonsters();
+  }
+
+  function manageMonsters() {
+    var currentPlayers = [];
+    for (var id in state) {
+      var data = state[id];
+      if (data.type === 0) {
+        currentPlayers.push(id);
+      }
+    }
+    if (currentPlayers.length > 0) {
+      if (!state[luckyPlayer]) {
+        luckyPlayer = currentPlayers[0];
+      }
+      if (Math.floor((Math.random() * 100) + 1) === 1) {
+        var newX = Math.floor(Math.random() * 4000);
+        var newY = Math.floor(Math.random() * 4000);
+
+        if (Math.sqrt(Math.pow(newX, 2) + Math.pow(newY, 2)) > 430) {
+          addNPC(npcid++, newX, newY);
+          console.log("New NPC Spawned at: " + newX + ", " + newY);
+        }
+
+        luckyPlayer = currentPlayers[Math.floor((Math.random() * currentPlayers.length))];
+      }
+      for (var id in state) {
+        var data = state[id];
+        if (data.type === 1) {
+          data.destx = state[luckyPlayer].x;
+          data.desty = state[luckyPlayer].y;
+        }
+      }
+    }
   }
 
   function relocate(toMove, reference, id, deltaT) {
@@ -175,8 +215,8 @@ module.exports = function (getSocketById) {
         var relpropy = distfromdesty / distfromdest;
 
         return {
-          x: charData.x + 0.2 * relpropx * deltaT,
-          y: charData.y + 0.2 * relpropy * deltaT
+          x: charData.x + 0.05 * relpropx * deltaT,
+          y: charData.y + 0.05 * relpropy * deltaT
         };
       }
     }
@@ -254,6 +294,7 @@ module.exports = function (getSocketById) {
     addNPC,
     updateNPC,
     updatePlayerVelocity,
+    wielding,
     removePlayer,
     getState,
     tick

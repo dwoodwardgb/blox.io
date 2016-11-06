@@ -79,14 +79,14 @@
 
       if (info.type === 0){
         drawPlayer(xPosition, yPosition, colorById(_id));
-        if (data[id].hand === "sword") {
-          if (data[id].handactive) {
-            drawPointedSword(xPosition, yPosition, data[id].facing);
+        if (data[_id].hand === "sword") {
+          if (data[_id].handactive) {
+            drawPointedSword(xPosition, yPosition, data[_id].facing);
           } else {
-            drawRestedSword(xPosition, yPosition, data[id].facing);
+            drawRestedSword(xPosition, yPosition, data[_id].facing);
           }
-        } else if (data[id].hand === "shield" && data[id].handactive) {
-          drawShield(xPosition, yPosition, data[id].facing);
+        } else if (data[_id].hand === "shield" && data[_id].handactive) {
+          drawShield(xPosition, yPosition, data[_id].facing);
         }
       } else if (info.type === 1) {
         drawMonster(xPosition, yPosition, "green");
@@ -95,9 +95,18 @@
   });
 
   socket.on('dead', function () {
-    setText('you died!');
+    //setText('you died!');
     socket.close();
-    window.alert('you died');
+  	var overlay = document.getElementById('overlay');
+  	var specialBox = document.getElementById('specialBox');
+  	overlay.style.opacity = .8;
+  	if(overlay.style.display == "block"){
+  		overlay.style.display = "none";
+  		specialBox.style.display = "none";
+  	} else {
+  		overlay.style.display = "block";
+  		specialBox.style.display = "block";
+  	}
   });
 
   //Test Window

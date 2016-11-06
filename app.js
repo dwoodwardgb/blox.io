@@ -3,7 +3,7 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var gameFactory = require('./game');
-var npcid = 1;
+var playerNum = 0;
 
 server.listen(4000);
 app.use(express.static('public'));
@@ -25,10 +25,19 @@ io.on('connection', function (socket) { //opens connection with a client
   console.log(`client: ${socket.id} connected`);
 
   // add player to game
-  var startX = 2000, startY = 2000;
-  var npcStartX = 1000, npcStartY = 1000;
-  game.addPlayer(socket.id, startX, startY);
-  game.addNPC(npcid++, npcStartX, npcStartY);
+  var startX = Math.floor((Math.random() * 1000) + 500), startY = Math.floor((Math.random() * 1000) + 500);
+
+  var hand = "empty";
+  playerNum++;
+  if (playerNum % 2 == 0) {
+    hand = "sword";
+  } else if (playerNum % 2 == 1) {
+    hand = "shield";
+  } else if (playerNum % 6) {
+    hand = "bow";
+  }
+
+  game.addPlayer(socket.id, startX, startY, hand);
 
   // tell player it's id
   socket.emit('id', socket.id);
@@ -48,5 +57,9 @@ io.on('connection', function (socket) { //opens connection with a client
   socket.on('click', function (data) {
     game.updateNPC(socket.id);
     console.log(`updated NPC dest: ${data.x},${data.y})`);
+  });
+
+  socket.on('wielded', function(data) {
+    game.wielding(socket.id, data);
   });
 });
