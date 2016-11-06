@@ -10,7 +10,7 @@ app.use(express.static('public'));
 
 // game instance ---------------------------------------------------------------
 
-var game = gameFactory();
+var game = gameFactory(id => io.sockets.sockets[id]);
 var intervalTime = 50;
 
 setInterval(function () {
